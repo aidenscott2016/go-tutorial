@@ -41,14 +41,14 @@ func (d deck) saveToFile(filename string) error {
 }
 
 func loadFromFile(filename string) deck {
-	file, err := ioutil.ReadFile(filename)
+	bytes, err := ioutil.ReadFile(filename)
 
 	if err != nil {
 		fmt.Println("Error: ", err)
 		os.Exit(1)
 	}
 
-	fmt.Println(file)
+	cardStrings := strings.Split(string(bytes), ",")
 
-	return deck{}
+	return deck(cardStrings)
 }
