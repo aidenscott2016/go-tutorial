@@ -2,9 +2,12 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 )
+
+type logWriter struct{}
 
 func main() {
 	resp, error := http.Get("http://neverssl.com")
@@ -12,11 +15,12 @@ func main() {
 		fmt.Println("error: ", error)
 		os.Exit(1)
 	}
+	lw := logWriter{}
+	io.Copy(lw, resp.Body)
+}
 
-	body := make([]byte, 9999)
-	n, err := resp.Body.Read(body)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Printf("%+v, %d", string(body), n)
+func (lw logWriter) Write(bs []byte) (int, error) {
+	fmt.Println(string(bs))
+	fmt.Printf("printed %d lines", len(bs))
+	return len(bs), nil
 }
