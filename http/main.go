@@ -7,11 +7,16 @@ import (
 )
 
 func main() {
-	resp, error := http.Get("http://google.com")
+	resp, error := http.Get("http://neverssl.com")
 	if error != nil {
 		fmt.Println("error: ", error)
 		os.Exit(1)
 	}
 
-	fmt.Println(resp.Header)
+	body := make([]byte, 9999)
+	n, err := resp.Body.Read(body)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("%+v, %d", string(body), n)
 }
